@@ -1,15 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import HomePage from "@/pages/HomePage";
+import CoursesPage from "@/pages/CoursesPage";
+import TeamPage from "@/pages/TeamPage";
+import ContactPage from "@/pages/ContactPage";
+import DashboardPage from "@/pages/DashboardPage";
+
+type Page = "home" | "courses" | "team" | "contact" | "dashboard";
 
 const Index = () => {
+  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [darkMode, setDarkMode] = useState(true);
+
+  const handleNavigate = (page: string) => {
+    setCurrentPage(page as Page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const isDashboard = currentPage === "dashboard";
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <div className={darkMode ? "dark" : ""}>
+      <div className="min-h-screen bg-black text-white">
+        {!isDashboard && (
+          <Navbar
+            currentPage={currentPage}
+            onNavigate={handleNavigate}
+            darkMode={darkMode}
+            onToggleDark={() => setDarkMode(!darkMode)}
+          />
+        )}
+        {currentPage === "home" && <HomePage onNavigate={handleNavigate} />}
+        {currentPage === "courses" && <CoursesPage onNavigate={handleNavigate} />}
+        {currentPage === "team" && <TeamPage onNavigate={handleNavigate} />}
+        {currentPage === "contact" && <ContactPage />}
+        {currentPage === "dashboard" && <DashboardPage onNavigate={handleNavigate} />}
       </div>
-      <span className="absolute bottom-8 left-1/2 -translate-x-1/2 inline-block bg-[#FF6637] text-white text-sm px-4 py-2 rounded-full whitespace-nowrap">
-        Подождите 5 минут, Юра создает первую версию проекта с нуля
-      </span>
     </div>
   );
 };
